@@ -7,9 +7,6 @@ del /sq 를 했어야 하는데
 매번 y 누르게 생겼네
 다음부턴 del /s /q .git 해서 안되면 윈도우탐색기에서 삭제.
 
-
-
-
 git show --stat
 
 git branch -m main 현재 브랜치를 main으로 이름바꾸기
@@ -19,3 +16,8 @@ git push origin +main 에서 +는 강제로 덮어버림을 의미
 윈도우에서는 add,commit 잘못한거 git reset HEAD^ 할때
 "HEAD^" 으로 따옴표 감싸거나 HEAD~1
 명령 프롬프트에서 ^ 기호가 특별한 뜻이 있다는군
+
+
+
+깃에서 로컬 -> 원격 저장소까지의 과정을 그리자면
+Working Directory (add ->) Stage Area (commit ->) Local Repository (push ->) Git Repository인 셈이다.
