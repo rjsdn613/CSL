@@ -1,0 +1,21 @@
+개좆밥오후 9:37
+.git 디렉터리 자체를 싹 지워야 되는데
+del .git 하면 그 안의 파일만 지워지고 하위 디렉터리가 남아있어
+그래서 del /s .git 해야 될 거야
+저장소가 초기화가 덜 된 거지
+del /sq 를 했어야 하는데
+매번 y 누르게 생겼네
+다음부턴 del /s /q .git 해서 안되면 윈도우탐색기에서 삭제.
+
+
+
+
+git show --stat
+
+git branch -m main 현재 브랜치를 main으로 이름바꾸기
+git push origin +main 에서 +는 강제로 덮어버림을 의미
+
+
+윈도우에서는 add,commit 잘못한거 git reset HEAD^ 할때
+"HEAD^" 으로 따옴표 감싸거나 HEAD~1
+명령 프롬프트에서 ^ 기호가 특별한 뜻이 있다는군
