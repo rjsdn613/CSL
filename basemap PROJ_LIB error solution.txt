@@ -1,0 +1,13 @@
+window cmd 를 연다.
+
+파이썬이 설치된 디스크로 이동한다 ex) E: 에 있으면 cmd에서 E로 간다음
+where /r "E:" epsg.* 를 해서 share 디렉토리가있는 경로를 찾는다.
+
+이제 아나콘다 프롬포트로 돌아와서 환경을 활성화해준다음 경로를 넣어준다.
+
+activate envname (base인 경우는 패스)
+SET PROJ_LIB=E:\anaconda\Library\share\basemap
+이후 파이썬으로 으로 돌아와서
+import os
+os.environ['PROJ_LIB']=r'E:\anaconda\Library\share\basemap'
+하면 해결.
