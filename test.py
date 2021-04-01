@@ -73,7 +73,7 @@ TOTAL_MP = np.zeros([10, 16, 40])
 
 yr_idx = -1
 
-for y in range(1980, 2020):
+for y in range(1980, 1981):
     yr_idx += 1
     TCnum = list(
         filter(lambda x: type(x) == list, tc2.get_tc_lon_yr(y))
@@ -98,26 +98,19 @@ for y in range(1980, 2020):
                         lt <= TC[cc_idx + c_idx, 1] < lt + 5
                         and ln <= TC[cc_idx + c_idx, 0] < ln + 5
                     ):
-                        if  TC[cc_idx + c_idx, 3] >= 50:
+                        if TC[cc_idx + c_idx, 2] <= 986.6 and TC[cc_idx + c_idx, 3] >= 50:
                             MP[lt_idx, ln_idx, yr_idx] = 1
 
         cc_idx = cc_idx + TCnum[i][1]
         TOTAL_MP[:, :, yr_idx] = TOTAL_MP[:, :, yr_idx] + MP[:, :, yr_idx]
 
 
-#### 10년씩 평균 #####
-
-MP_10year_mean = np.zeros([10, 16, 4])
-
-for i in range(4):
-    MP_10year_mean[:, :, i] = np.mean(TOTAL_MP[:, :, i * 10 : i * 10 + 10], axis=2)
-
 ############################################################################################
 # plot
 ############################################################################################
 fig = plt.figure(figsize=(5, 5))  ## 4,4 는 inch
 
-for years in range(4):
+for years in range(1):
 
     ax = fig.add_subplot(2, 2, years + 1)
 
@@ -140,7 +133,7 @@ for years in range(4):
     ######## DATA PLOT START ########
 
     map.contourf(
-        x, y, MP_10year_mean[:, :, years], cmap="Reds", levels=[0, 3, 6, 9, 12, 15, 18, 21, 24]
+        x, y, TOTAL_MP[:, :, years], cmap="Reds", levels=[0, 3, 6, 9, 12, 15, 18, 21, 24]
     )
     cbar = map.colorbar()
     cbar.set_label("TCs", rotation=90, size=12)

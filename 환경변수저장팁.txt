@@ -1,0 +1,2 @@
+리눅스의 export 명령어는 윈도우에서 Env로 사용할수있다.
+$Env:PYTHONPATH = 
