@@ -113,7 +113,7 @@ def get_tc_wind(TC_numbers):
                     data = f.readline()
 
                     TC_data.append(data)
-                    wind = int(TC_data[i].split()[6])
+                    wind = int(TC_data[i].split()[6])*0.514
                     WIND.append(wind)
 
     return WIND
@@ -375,7 +375,7 @@ def get_tc_wind_yr(years):
             WIND.append(["TC_count_num is", TC_count_num])
             for i in range(TC_count_num):
                 data = f.readline()
-                wind = int(data.split()[3]) * 0.1
+                wind = int(data.split()[6])*0.514
                 WIND.append(wind)
 
             line = f.readline()

@@ -25,7 +25,7 @@ from matplotlib import gridspec
 #         pres.append(TC[idx,2])
 
 """
-풍속 50m/s 일때 평균 기압은 986.6hPa.
+
 """
 ######################################################
 """
@@ -68,8 +68,8 @@ for yr in range(1980, 2020):
 #                             MP[lt_idx, ln_idx, yr_idx] += 1
 
 
-MP = np.zeros([10, 16, 40])  # lt, ln, yr
-TOTAL_MP = np.zeros([10, 16, 40])
+
+TOTAL_MP = np.zeros([14, 18, 40])
 
 yr_idx = -1
 
@@ -85,14 +85,16 @@ for y in range(1980, 2020):
     TC[:, 2] = tc.get_tc_pres_yr(y)
     TC[:, 3] = tc.get_tc_wind_yr(y)
 
+
     cc_idx = 0
     for i in range(len(TCnum)):  ## 해당년도 태풍 갯수
+        MP = np.zeros([14, 18, 40])  # lt, ln, yr
         for c_idx in range(TCnum[i][1]):  ## 같은 태풍 loop
             lt_idx = -1
-            for lt in range(0, 50, 5):
+            for lt in range(-10, 60, 5):
                 lt_idx += 1
                 ln_idx = -1
-                for ln in range(100, 180, 5):
+                for ln in range(100, 190, 5):
                     ln_idx += 1
                     if (
                         lt <= TC[cc_idx + c_idx, 1] < lt + 5
@@ -105,17 +107,47 @@ for y in range(1980, 2020):
         TOTAL_MP[:, :, yr_idx] = TOTAL_MP[:, :, yr_idx] + MP[:, :, yr_idx]
 
 
+
+sTC=np.zeros(40)
+yr_idx=-1
+for y in range(1980, 2020):
+    yr_idx+=1
+    TCnum = list(
+        filter(lambda x: type(x) == list, tc2.get_tc_lon_yr(y))
+    ) 
+    NN = np.size(tc.get_tc_lon_yr(y))
+    TC = np.empty([NN, 1])
+    TC[:, 0] = tc.get_tc_wind_yr(y)
+    cc_idx = 0
+    for i in range(len(TCnum)):  ## 해당년도 태풍 갯수
+        for c_idx in range(TCnum[i][1]):  ## 같은 태풍 loop
+            if TC[cc_idx + c_idx,0]>=50:
+                sTC[yr_idx]+=1
+                break    
+        cc_idx = cc_idx + TCnum[i][1]
+
+
+
+
+
 #### 10년씩 평균 #####
 
-MP_10year_mean = np.zeros([10, 16, 4])
-
+MP_10year_sum = np.zeros([14, 18, 4])
+sTC_10year_sum = np.zeros(4)
 for i in range(4):
-    MP_10year_mean[:, :, i] = np.mean(TOTAL_MP[:, :, i * 10 : i * 10 + 10], axis=2)
+    MP_10year_sum[:, :, i] = np.sum(TOTAL_MP[:, :, i * 10 : i * 10 + 10], axis=2)
+    sTC_10year_sum[i]      = np.sum(sTC[i*10:i*10+10])
+
+#### 0 을 NaN 처리 ####
+MP_10year_sum=np.where(MP_10year_sum==0,np.NaN,MP_10year_sum)
+
+
+
 
 ############################################################################################
 # plot
 ############################################################################################
-fig = plt.figure(figsize=(5, 5))  ## 4,4 는 inch
+fig = plt.figure(figsize=(15, 12))  ## 4,4 는 inch
 
 for years in range(4):
 
@@ -126,7 +158,7 @@ for years in range(4):
     map = Basemap(
         projection="merc", llcrnrlon=100, llcrnrlat=0, urcrnrlon=170, urcrnrlat=45, resolution="h"
     )
-    llons, llats = np.meshgrid(range(100, 180, 5), range(0, 50, 5))
+    llons, llats = np.meshgrid(range(100, 190, 5), range(-10, 60, 5))
     x, y = map(llons, llats)
 
     map.fillcontinents(color="grey", lake_color="aqua")
@@ -137,13 +169,14 @@ for years in range(4):
     map.drawmeridians(np.arange(100, 180, 20), labels=[0, 0, 0, 1])
     ######## MAP BASIC SETTING END ########
 
+
+
+
     ######## DATA PLOT START ########
 
-    map.contourf(
-        x, y, MP_10year_mean[:, :, years], cmap="Reds", levels=[0, 3, 6, 9, 12, 15, 18, 21, 24]
-    )
+    map.contourf(x, y, MP_10year_sum[:, :, years], cmap="Reds", levels=[0,2,4,6,8,10,12,14])
     cbar = map.colorbar()
-    cbar.set_label("TCs", rotation=90, size=12)
+    cbar.set_label("Major  TCs", rotation=90, size=12)
 
     ######## DATA PLOT END ########
 
@@ -152,7 +185,7 @@ for years in range(4):
     # # of ax and the padding between cax and ax will be fixed at 0.05 inch.
 
     # divider = make_axes_locatable(ax)
-    # cax = divider.append_axes("right", size="5%", pad=0.1)
+    # cax = divider.append_axes("right", size="5%", pad=0.1
     #     pt,
     #     aspect=30,
     #     fraction=0.15,
@@ -167,10 +200,16 @@ for years in range(4):
 
     ######## TITLE SETTING START ########
     tcs = str(sum(TCs_yr[years * 10 : years * 10 + 10]))
+    stcs=str(int(sTC_10year_sum[years]))
     title1 = str(years * 10 + 1980)
     title2 = str(years * 10 + 1989)
-    plt.title(title1 + "-" + title2 + "(" + "TCs = " + tcs + ")", fontsize=10)
-    plt.suptitle("TCs Mean", fontsize=20)
+
+    plt.title(title1 + "-" + title2 ,fontsize=13,fontweight='bold')
+    plt.title( "TCs = " + tcs + "\n" + "Majors = " + stcs   , loc='right',fontsize=10,fontweight='bold')
+    plt.title( "Major ≥ 50m/s"   , loc='left',fontsize=10,fontweight='bold')
+    
+
+    plt.suptitle("Decadal Major TC Areas", fontsize=20)
     # plt.xlabel('',labelpad=10)
     # plt.ylabel('',labelpad=10)
     ######## TITLE SETTING END ########
@@ -188,7 +227,7 @@ figure, axes = plt.subplots(2,2, constrained_layout=True) 이런식으로 서브
 
 fig.tight_layout()  # 자동 서브플롯 간격 안겹치게
 
-plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, hspace=0.4, wspace=0.4)
+plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.85, hspace=0.4, wspace=0.4)
 
 plt.show()
 
