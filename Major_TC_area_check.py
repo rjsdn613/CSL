@@ -110,8 +110,6 @@ for num in range(40,55,5):   # Major TC 기준(num) 을 40 , 45, 50 으로 가�
 
 
 
-
-
     #### 10년씩 평균 #####
     myrs=int(yrs/10)
     MP_10year_sum = np.zeros([lts, lns, myrs])

@@ -76,6 +76,11 @@ ax = fig.add_subplot(2,1,2)
 plt.plot(V[0,:])
 
 
+plt.suptitle("EOF1",fontsize=20,fontweight='bold')
+
+plt.savefig("E:/CSL/visual studio/SourceTree/EOF1.png")
+plt.close()
+
 #%%
 fig = plt.figure(figsize=(10, 10))
 ax = fig.add_subplot(2,1,1)
@@ -99,6 +104,11 @@ map.colorbar()
 ax = fig.add_subplot(2,1,2)
 plt.plot(V[1,:])
 
+plt.suptitle("EOF2",fontsize=20,fontweight='bold')
+
+plt.savefig("E:/CSL/visual studio/SourceTree/EOF2.png")
+plt.close()
+
 #%%
 fig = plt.figure(figsize=(10, 10))
 ax = fig.add_subplot(2,1,1)
@@ -121,6 +131,11 @@ map.colorbar()
 
 ax = fig.add_subplot(2,1,2)
 plt.plot(V[2,:])
+
+plt.suptitle("EOF3",fontsize=20,fontweight='bold')
+
+plt.savefig("E:/CSL/visual studio/SourceTree/EOF3.png")
+plt.close()
 
 
 
