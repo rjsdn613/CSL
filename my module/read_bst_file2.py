@@ -6,7 +6,7 @@
 
 def get_tc_lat_yr(years):
 
-    with open("E:/CSL/bst_all_80.txt", "r") as f:
+    with open("E:/CSL/new_bst_all_80.txt", "r") as f:
 
         LAT = []
 
@@ -58,7 +58,7 @@ def get_tc_lat_yr(years):
 
 def get_tc_lon_yr(years):
 
-    with open("E:/CSL/bst_all_80.txt", "r") as f:
+    with open("E:/CSL/new_bst_all_80.txt", "r") as f:
 
         LON = []
 
@@ -110,7 +110,7 @@ def get_tc_lon_yr(years):
 
 def get_tc_pres_yr(years):
 
-    with open("E:/CSL/bst_all_80.txt", "r") as f:
+    with open("E:/CSL/new_bst_all_80.txt", "r") as f:
 
         PRES = []
 
@@ -162,7 +162,7 @@ def get_tc_pres_yr(years):
 
 def get_tc_wind_yr(years):
 
-    with open("E:/CSL/bst_all_80.txt", "r") as f:
+    with open("E:/CSL/new_bst_all_80.txt", "r") as f:
 
         WIND = []
 
@@ -214,7 +214,7 @@ def get_tc_wind_yr(years):
 
 def get_tc_grade_yr(years):
 
-    with open("E:/CSL/bst_all_80.txt", "r") as f:
+    with open("E:/CSL/new_bst_all_80.txt", "r") as f:
 
         GRADE = []
 
@@ -266,7 +266,7 @@ def get_tc_grade_yr(years):
 
 def get_tc_date_yr(years):
 
-    with open("E:/CSL/bst_all_80.txt", "r") as f:
+    with open("E:/CSL/new_bst_all_80.txt", "r") as f:
 
         yr = []
         mo = []
