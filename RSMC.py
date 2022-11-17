@@ -23,7 +23,7 @@ from scipy import interpolate
 print("t=0 이면 년도로 호출, t=1 이면 태풍번호로 호출")
 print("모든 년도와 태풍번호는 과거부터 현재순으로 입력해야 합니다.")
 print("input(*args)이 list이면 앞에 *를 붙이세요.")
-print("ex) tc_number=[1210, 1219, 1313] 일 때 사용법 => RSMC_I(*tcs, t=1)")
+print("ex) tc_number=[1210, 1219, 1313] 일 때 사용법 => RSMC_I(*tc_number, t=1)")
 print(" ")
 
 
@@ -142,8 +142,6 @@ def RSMC_tc_df(idx):
                 for i in range(TC_count_num): 
                     f.readline()
     return tc[tc.spd >= 17]
-
-
 
 
 
@@ -388,8 +386,6 @@ class RSMC_I:
 
                 print("입력위도값에서 태풍의 풍속 값 (0인 경우, missing data)")
         return (idx, mean_lat_spd)
-
-
 
 
 
@@ -781,9 +777,6 @@ class RSMC_T:
 
 
 
-
-
-
 #Datetime
 class RSMC_D:
     def __init__(self, *args, t): # t=0이면 년도로 호출, t=1이면 태풍번호로 호출
@@ -822,6 +815,8 @@ class RSMC_D:
         idx = self.idxs
         with open("E:/CSL/bst_all_82.txt", "r") as f:
 
+            start_date = []
+            end_date = []
             for i in range(len(idx)):
                 if i == 0 :
                     line = f.readline()
@@ -861,7 +856,11 @@ class RSMC_D:
                     while True and yrs == yr_idx:
                         for i in range(TC_count_num):
                             data = f.readline()
-                            start_date = float(data.split()[0])
+                            if i == 0 :
+                                start_date.append(int(data.split()[0]))
+                            elif i == TC_count_num-1:
+                                end_date.append(int(data.split()[0]))
+
 
                         line = f.readline()
                         if not line:
@@ -878,12 +877,18 @@ class RSMC_D:
 
 
                 elif self.t == 1 :
+
                     while True and tc_nums == TC_number:
                         print("베스트트랙 태풍번호", TC_number)
                         print("입력 태풍번호", tc_nums)
 
                         for i in range(TC_count_num):
                             data = f.readline()
+                            if i == 0 :
+                                start_date.append(int(data.split()[0]))
+                            elif i == TC_count_num-1:
+                                end_date.append(int(data.split()[0]))
+
 
                         line = f.readline()
                         if not line:
@@ -892,11 +897,117 @@ class RSMC_D:
                         TC_number = int(TC_info_line[1])
                         TC_count_num = int(TC_info_line[2])
 
-
-
-
+        return (idx, start_date, end_date)
 
 
     def LAT(self, lat):
         idx = self.idxs
         self.lat = lat
+
+        with open("E:/CSL/bst_all_82.txt", "r") as f:
+                lat_dates = []
+                for i in range(len(idx)):
+
+                    if i == 0 :
+                        line = f.readline()
+                        TC_info_line = line.split()
+                        TC_number = int(TC_info_line[1])
+                        TC_count_num = int(TC_info_line[2])
+
+                    if self.t == 0 :
+                        yrs = idx[i]
+                        while TC_number != ((yrs % 100) * 100 + 1):
+                            for a in range(TC_count_num):
+                                line = f.readline()
+
+                            line = f.readline()
+                            TC_info_line = line.split()
+                            TC_number = int(TC_info_line[1])
+                            TC_count_num = int(TC_info_line[2])
+
+                    elif self.t == 1 :
+                        tc_nums = idx[i]
+                        while TC_number != tc_nums:
+                            for a in range(TC_count_num):
+                                line = f.readline()
+                            line = f.readline()
+                            TC_info_line = line.split()
+                            TC_number = int(TC_info_line[1])
+                            TC_count_num = int(TC_info_line[2])
+
+
+                    
+                    if self.t == 0 :
+                        yr_idx = int(TC_number / 100)
+                        if yr_idx < 30:
+                            yr_idx += 2000
+                        else:
+                            yr_idx += 1900
+
+                        while True and yrs == yr_idx:
+                            dates = []
+                            lats = []
+                            for i in range(TC_count_num):
+                                data = f.readline()
+                                tclat = float(data.split()[3])*0.1 #lat
+                                tcdate = int(data.split()[0])
+                                lats.append(tclat)
+                                dates.append(tcdate)
+
+                            lat_idx = lats.index(find_nearest(lats, self.lat))
+                            if lats[lat_idx] - self.lat > 3:
+                                print("입력 위도값과 가장 가까운 태풍의 위도값이 3도이상 차이나므로 주의하세요.")
+                            lat_dates.append(dates[lat_idx])
+
+                            line = f.readline()
+                            if not line:
+                                break
+                            TC_info_line = line.split()
+                            TC_number = int(TC_info_line[1])
+                            TC_count_num = int(TC_info_line[2])
+
+                            yr_idx = int(TC_number / 100)
+                            if yr_idx < 30:
+                                yr_idx += 2000
+                            else:
+                                yr_idx += 1900
+
+
+                    elif self.t == 1 :
+                        while True and tc_nums == TC_number:
+                            print("베스트트랙 태풍번호", TC_number)
+                            print("입력 태풍번호", tc_nums)
+                            dates = []
+                            lats = []
+                            counts=0
+                            for i in range(TC_count_num):
+                                data = f.readline()
+                                tcdate = int(data.split()[0])
+                                tclat = float(data.split()[3])*0.1 #lat
+                                lats.append(tclat)
+                                dates.append(tcdate)
+
+                            if len(np.where(np.array(lats)==find_nearest(lats, self.lat))[0]) == 1:
+                                lat_idx = np.where(np.array(lats)==find_nearest(lats, self.lat))[0][0]
+                            elif len(np.where(np.array(lats)==find_nearest(lats, self.lat))[0]) > 1:
+                                cts = len(np.where(np.array(lats)==find_nearest(lats, self.lat))[0])
+                                x = int(input("태풍이 입력위도값을 "+str(cts)+"번 지나갑니다. 몇 번째 위도값을 반환할지 입력하세요(0부터 시작) : "))
+                                lat_idx = np.where(np.array(lats)==find_nearest(lats, self.lat))[0][x]
+
+
+                            if lats[lat_idx] - self.lat > 3:
+                                counts+=1
+                            lat_dates.append(dates[lat_idx])
+
+                            line = f.readline()
+                            if not line:
+                                break
+                            TC_info_line = line.split()
+                            TC_number = int(TC_info_line[1])
+                            TC_count_num = int(TC_info_line[2])
+                        if counts >= 1:
+                            print("입력 위도값과 가장 가까운 태풍[",str(counts),"] 의 위도값이 3도이상 차이나므로 주의하세요.")
+
+        return (idx, lat_dates)
+
+
